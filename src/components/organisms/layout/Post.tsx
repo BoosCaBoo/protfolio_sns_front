@@ -80,82 +80,92 @@ export const Post: FC<POST> = (props) => {
             <Stack spacing={1} py={4} px={4} >
                 <Box>
 
-                <Avatar src={prof[0]?.avatar} />
-                <Text fontSize="lg" fontWeight="bold">{prof[0]?.user_name}</Text>  
-
-                {user_post === loginId ? (
-                    <Icon as={DeleteIcon} onClick={handleDelete}/>):(null)}
-
-                  
-                <Image objectFit="cover" alt="" src={image} boxSize="300px" align="center" />
-                <Box pt={4} isTruncated >{body}</Box>
-
-                {!liked.some((like) => like === loginId)  ? (
-                    <Button
-                        leftIcon={<StarIcon/>}
-                        bg="gray.200"
-                        onClick={handleLiked}
-                        _hover={{ opacity: 1 }}
-                    >いいね</Button>
-                ): (
-                    <Button
-                        leftIcon={<StarIcon/>}
-                        bg="red.200"
-                        onClick={handleLiked}
-                        _hover={{ opacity: 1 }}
-                    >いいね済み</Button>
-                )}
-                <AvatarGroup size="md" max={7} >
-                    {liked.map((like) => (
-                        <Avatar key={like} name="" src={profiles.find((prof) => prof.user_profile === like)?.avatar} />
-                    ))}
-                </AvatarGroup>
-
-                {commentsOnPost.map((comment) => (
-                      
-                    <Grid key={comment.id} templateColumns="repeat(7, 1fr)" templateRows="repeat(2, 1fr)" >
-                        <GridItem colSpan={3} rowSpan={2} >
-                            <Avatar
-                            src={
-                                profiles.find(
-                                    (prof) => prof.user_profile === comment.user_comment
-                                )?.avatar
-                            }
-                            />
-                        </GridItem>
-                        <GridItem colSpan={4} rowSpan={1} >
-                            <Text>{
-                                profiles.find(
-                                    (prof) => prof.user_profile === comment.user_comment
-                                )?.user_name
-                                }</Text>
-                        </GridItem>
-                        <GridItem colSpan={4} rowSpan={1} >
-                            <Text>{comment.body}</Text>
-                        </GridItem>
+                    <Grid templateColumns="repeat(3, 1fr)" >
+                        <Avatar src={prof[0]?.avatar} />
+                        <Text fontSize="lg" fontWeight="bold" mt={1} >{prof[0]?.user_name}</Text>  
+                        {user_post === loginId ? (
+                            <Icon as={DeleteIcon} onClick={handleDelete} mt={2} />):(null)}
                     </Grid>
+                
+                    <Box align="center" >  
+                        <Image 
+                            objectFit="cover" 
+                            alt="" src={image} 
+                            boxSize="550px" 
+                            mt={3} 
+                        />
+                    </Box>
+                    <Box pt={4} isTruncated >{body}</Box>
+
+                    {!liked.some((like) => like === loginId)  ? (
+                        <Button
+                            leftIcon={<StarIcon/>}
+                            bg="gray.200"
+                            onClick={handleLiked}
+                            _hover={{ opacity: 1 }}
+                    >いいね</Button>
+                    ): (
+                        <Button
+                            leftIcon={<StarIcon/>}
+                            bg="red.200"
+                            onClick={handleLiked}
+                            _hover={{ opacity: 1 }}
+                        >いいね済み</Button>
+                     )}
+                    <AvatarGroup size="md" max={7} >
+                        {liked.map((like) => (
+                            <Avatar 
+                                key={like} 
+                                name="" 
+                                src={profiles.find((prof) => 
+                                    prof.user_profile === like)?.avatar} />
+                                ))}
+                    </AvatarGroup>
+
+                    {commentsOnPost.map((comment) => (
+                        <Grid 
+                            key={comment.id} 
+                            templateColumns="repeat(7, 1fr)" 
+                            templateRows="repeat(2, 1fr)" 
+                        >
+                            <GridItem colSpan={3} rowSpan={2} >
+                                <Avatar
+                                src={
+                                    profiles.find(
+                                        (prof) => prof.user_profile === comment.user_comment
+                                    )?.avatar
+                                }
+                                />
+                            </GridItem>
+                            <GridItem colSpan={4} rowSpan={1} >
+                                <Text>{
+                                    profiles.find((prof) => prof.user_profile === comment.user_comment)?.user_name
+                                }</Text>
+                            </GridItem>
+                            <GridItem colSpan={4} rowSpan={1} >
+                                <Text>{comment.body}</Text>
+                            </GridItem>
+                        </Grid>
                     
-                ))}
+                    ))}
                     <InputGroup>
                         <Input 
-                        pr="4.5rm"
-                        type="text"
-                        placeholder="コメントをかく"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
+                            pr="4.5rm"
+                            type="text"
+                            placeholder="コメントをかく"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
                         />
                         <Button
-                        disabled={!text.length}
-                        type="submit"
-                        onClick={postComment}
-                        colorScheme="teal"
-                        >
-                            投稿
+                            disabled={!text.length}
+                            type="submit"
+                            onClick={postComment}
+                            colorScheme="teal"
+                        >投稿
                         </Button>
                     </InputGroup>
                 </Box>
             </Stack>
-            
         )
-    } return null
+    } return null;
 }

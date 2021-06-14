@@ -74,9 +74,9 @@ export const Core: FC = () => {
             {(isLoadingPost || isLoadingAuth) && <Progress size="xs" isIndeterminate color="teal" /> }
             { profile.user_name && (
                 <>
-                <Grid templateColumns="repeat(3, 1fr)" pt="100px" gap={6} >
+                <Grid templateColumns="repeat(2, 1fr)" pt="100px" >
                     {posts.slice(0).reverse().map((post) => (
-                        <Box key={post.id} maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden" m={5} >
+                        <Box key={post.id} maxW="100%" bg="gray.100" borderWidth="2px" borderColor="black.200" borderRadius="lg" overflow="hidden" m={5} >
                             <Post
                                 id={post.id}
                                 loginId={profile.user_profile}
