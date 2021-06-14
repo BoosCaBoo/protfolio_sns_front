@@ -19,24 +19,28 @@ export interface JWT {
     access: string;
 }
 
-
 export interface POST_PROFILE {
     id: number;
     user_name: string;
-    avatar?: File;
+    avatar?: File | null;
     bio: string;
 }
 
-export  interface NEWPOST {
+export interface NEWPOST {
     body: string;
-    image?: File | null;
+    image: File | null;
+}
+
+export interface DELETEPOST {
+    id: number;
 }
 
 export interface LIKED {
-    id: number;
+    id:  number;
     body: string;
-    current: number[];
-    new: number;
+    image: string;
+    liked: number[];
+    user_profile: number | Blob;
 }
 
 export interface COMMENT {
@@ -49,6 +53,6 @@ export interface POST {
     loginId: number;
     user_post: number;
     body: string;
-    image?: string;
+    image: string;
     liked: number[];
 }

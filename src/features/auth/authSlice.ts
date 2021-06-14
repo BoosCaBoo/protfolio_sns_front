@@ -136,6 +136,9 @@ export const authSlice = createSlice({
         resetOpenProfile(state) {
             state.openProfile = false;
         },
+        editUserName(state, action) {
+            state.myProfile.user_name = action.payload
+        }
     },
 
     extraReducers: (builder) => {
@@ -171,6 +174,7 @@ export const {
     resetOpenSignUp,
     setOpenProfile,
     resetOpenProfile,
+    editUserName,
 } =  authSlice.actions;
 
 export const selectIsLoadingAuth = (state: RootState) => state.auth.isLoadingAuth;

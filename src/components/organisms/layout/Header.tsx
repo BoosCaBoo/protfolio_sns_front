@@ -6,7 +6,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import { Box, Flex, Heading, Spacer, Stack, Wrap, WrapItem } from "@chakra-ui/layout";
 import { Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay } from "@chakra-ui/modal";
 import { Textarea } from "@chakra-ui/textarea";
-import React, { FC, useEffect } from "react";
+import React, { Children, FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../app/store";
 
@@ -34,12 +34,13 @@ import {
     fetchAsyncGetPosts,
     fetchAsyncGetComments,
 } from "../../../features/post/postSlice";
+import { NewPost } from "./NewPost";
+import { ProfileDetail } from "./ProfileDetail";
 
 
 export const Header:FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const profile = useSelector(selectMyProfile);
-    const posts = useSelector(selectPosts);
     const isLoadingAuth = useSelector(selectIsLoadingAuth);
     const isLoadingPost = useSelector(selectIsLoadingPost);
 
@@ -61,11 +62,9 @@ export const Header:FC = () => {
         fetchBootLoader();
       }, [dispatch]);
 
-
-
-
-
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    
+   
+    
 
 
     return (
@@ -98,9 +97,10 @@ export const Header:FC = () => {
                         display={{ base: "none", md: "flex"}}
                     >
                         <Box pr={4} pl={4} >
-                            <Button colorScheme="teal">ホーム</Button>
                         
-                        <Button colorScheme="teal">プロフィール</Button>
+                        <ProfileDetail 
+                            children={"プロフィール"}
+                        />
                         
                         <Button 
                             colorScheme="teal"
@@ -125,46 +125,7 @@ export const Header:FC = () => {
                     </WrapItem>
                 </Wrap>
                 
-                <Button 
-                    leftIcon={<AddIcon/>} 
-                    colorScheme="teal" 
-                    onClick={onOpen}
-                    _hover={{ opacity: 0.6}}
-                >
-                    投稿
-                </Button>
-                
-                <Drawer
-                    isOpen={isOpen}
-                    placement="right"
-                    onClose={onClose}
-                    size="sm"
-                >   
-                    <DrawerOverlay />
-                    <DrawerContent>
-                    <DrawerCloseButton/>
-                    <DrawerHeader borderBottomWidth="1px">投稿をする</DrawerHeader>
-
-                    <DrawerBody>
-                        <Stack spacing="25px">
-                            <Box>
-                                <FormLabel htmlFor="desc">投稿内容</FormLabel>
-                                    <Textarea htmlFor="desc" 
-                                        id="body"
-                                        placeholder="...150文字まで"
-                                    ></Textarea>
-                            </Box>        
-                            <Box>
-                                <h1>kokoni image</h1>
-                            </Box>
-                        </Stack>
-                    </DrawerBody>
-                    <DrawerFooter borderTopWidth="1px">
-                        <Button variant="outline" mr={3} onClick={onClose}>キャンセル</Button>
-                        <Button variant="blue" >投稿</Button>                                    
-                    </DrawerFooter>                        
-                    </DrawerContent>
-                </Drawer>
+                <NewPost />
                 
 
             </Flex>

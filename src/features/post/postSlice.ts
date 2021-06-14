@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import { NEWPOST, POST, COMMENT, LIKED } from "../../types/types";
+import { NEWPOST, COMMENT, LIKED, DELETEPOST } from "../../types/types";
+
 
 
 const URL = process.env.REACT_APP_API_ENDPOINT;
@@ -18,12 +19,23 @@ export const fetchAsyncGetPosts = createAsyncThunk(
     }
 );
 
+export const fetchAsyncDeletePost = createAsyncThunk(
+    "post/delete",
+    async (deletePost: DELETEPOST ) => {
+        const res = await axios.delete(`${URL}/post/Post/${deletePost.id}`, {
+            headers: {
+                Authorization: `JWT ${localStorage.localJWT}`,
+            }
+        })
+    }
+)
+
 export const fetchAsyncNewPost = createAsyncThunk(
     "post/Post",
     async (newPost: NEWPOST) => {
         const uploadData = new FormData();
-        uploadData.append("body", newPost.body)
-        newPost.image && uploadData.append("img", newPost.image, newPost.image.name);
+        uploadData.append("body", newPost.body);
+        newPost.image && uploadData.append("image", newPost.image, newPost.image.name);
         const res = await axios.post(`${URL}/post/Post/`, uploadData, {
             headers: {
                 "Content-Type": "application/json",
@@ -37,12 +49,12 @@ export const fetchAsyncNewPost = createAsyncThunk(
 export const fetchAsyncPatchLiked = createAsyncThunk(
     "post/liked",
     async (liked: LIKED) => {
-        const currentLiked = liked.current;
+        const currentLiked = liked.liked;
         const uploadData = new FormData();
 
         let isOverLapped = false;
         currentLiked.forEach((current) => {
-            if (current === liked.new) {
+            if (current === liked.user_profile) {
                 isOverLapped = true;
             } else {
                 uploadData.append("liked", String(current));
@@ -50,7 +62,7 @@ export const fetchAsyncPatchLiked = createAsyncThunk(
         });
 
         if (!isOverLapped) {
-            uploadData.append("liked", String(liked.new));
+            uploadData.append("liked", String(liked.user_profile));
         } else if (currentLiked.length === 1) {
             uploadData.append("body", liked.body);
             const res = await axios.put(`${URL}/post/Post/${liked.id}/`, uploadData, {
@@ -61,7 +73,7 @@ export const fetchAsyncPatchLiked = createAsyncThunk(
             });
             return res.data;
         }
-        const res = await axios.patch(`${URL}/${liked.id}/`, uploadData, {
+        const res = await axios.patch(`${URL}/post/Post/${liked.id}/`, uploadData, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `JWT ${localStorage.localJWT}`,
@@ -86,7 +98,7 @@ export const fetchAsyncGetComments = createAsyncThunk(
 export const fetchAsyncPostComment = createAsyncThunk(
     "commetn/post",
     async (comment: COMMENT) => {
-        const res = await axios.post(`${URL}/postComment`, comment, {
+        const res = await axios.post(`${URL}/post/Comment/`, comment, {
             headers: {
                 Authorization: `JWT ${localStorage.localJWT}`
             },

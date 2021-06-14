@@ -24,6 +24,7 @@ import {
     fetchAsyncGetProfs,
     fetchAsyncCreateProf,
 } from "../features/auth/authSlice";
+import { fetchAsyncGetComments, fetchAsyncGetPosts } from "../features/post/postSlice";
 // import { PrimaryButton } from "./atoms/button/PrimaryButton";
 
 const CustomStyle = {
@@ -66,6 +67,8 @@ export const Auth: React.FC = () => {
                             await dispatch(fetchAsyncCreateProf({ user_name: values.name, bio: "", avatar: null }));                            
                             
                             await dispatch(fetchAsyncGetProfs());
+                            await dispatch(fetchAsyncGetPosts());
+                            await dispatch(fetchAsyncGetComments())
                             await dispatch(fetchAsyncGetMyProf());
                         }
 
