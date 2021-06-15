@@ -26,9 +26,9 @@ export const fetchAsyncDeletePost = createAsyncThunk(
             headers: {
                 Authorization: `JWT ${localStorage.localJWT}`,
             }
-        })
+        });
     }
-)
+);
 
 export const fetchAsyncNewPost = createAsyncThunk(
     "post/Post",
@@ -165,7 +165,7 @@ export const postSlice = createSlice({
         builder.addCase(fetchAsyncGetComments.fulfilled, (state, action) => {
             return {
                 ...state,
-                comments: [...state.comments, action.payload],
+                comments: action.payload,
             };
         });
         builder.addCase(fetchAsyncPostComment.fulfilled, (state, action) => {

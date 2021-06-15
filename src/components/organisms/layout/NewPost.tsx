@@ -9,15 +9,13 @@ import { FormLabel } from "@chakra-ui/form-control";
 
 import { File } from "../../../types/types";
 import { AppDispatch } from "../../../app/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import {
         fetchAsyncNewPost, 
         fetchAsyncGetPosts,
         fetchAsyncGetComments,
         fetchPostEnd,
         fetchPostStart,
-        selectOpenNewPost, 
-        fetchAsyncPostComment
 } from "../../../features/post/postSlice";
 import { Input } from "@chakra-ui/input";
 
@@ -26,7 +24,6 @@ import { Input } from "@chakra-ui/input";
 
 export const NewPost: FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const openNewPost = useSelector(selectOpenNewPost);
 
     const [body, setBody] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
@@ -97,7 +94,8 @@ export const NewPost: FC = () => {
                     disabled={!body || !image} 
                     variant="blue" 
                     onClick={newPost} 
-                    colorScheme="teal"
+                    color="white"
+                    bg="teal"
                 >投稿</Button>                                    
             </DrawerFooter>                       
         </DrawerContent>

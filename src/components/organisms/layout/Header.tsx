@@ -1,35 +1,22 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Button } from "@chakra-ui/button";
-import { FormLabel } from "@chakra-ui/form-control";
-import { useDisclosure } from "@chakra-ui/hooks";
-import { AddIcon } from "@chakra-ui/icons";
-import { Box, Flex, Heading, Spacer, Stack, Wrap, WrapItem } from "@chakra-ui/layout";
-import { Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay } from "@chakra-ui/modal";
-import { Textarea } from "@chakra-ui/textarea";
-import React, { Children, FC, useEffect } from "react";
+import { Box, Flex, Heading, Spacer, Wrap, WrapItem } from "@chakra-ui/layout";
+import React, { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../app/store";
 
 
 import {
     selectMyProfile,
-    selectIsLoadingAuth,
     setOpenSignIn,
     resetOpenSignIn,
-    setOpenSignUp,
-    resetOpenSignUp,
-    setOpenProfile,
     resetOpenProfile,
-    fetchAsyncLogin,
     fetchAsyncGetMyProf,
     fetchAsyncGetProfs,
 } from "../../../features/auth/authSlice";
 
 
 import {
-    selectPosts,
-    selectIsLoadingPost,
-    setOpenNewPost,
     resetOpenNewPost,
     fetchAsyncGetPosts,
     fetchAsyncGetComments,
@@ -41,8 +28,6 @@ import { ProfileDetail } from "./ProfileDetail";
 export const Header:FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const profile = useSelector(selectMyProfile);
-    const isLoadingAuth = useSelector(selectIsLoadingAuth);
-    const isLoadingPost = useSelector(selectIsLoadingPost);
 
     useEffect(() => {
         const fetchBootLoader = async () => {
@@ -62,11 +47,6 @@ export const Header:FC = () => {
         fetchBootLoader();
       }, [dispatch]);
 
-    
-   
-    
-
-
     return (
         <>
             <Flex
@@ -76,10 +56,10 @@ export const Header:FC = () => {
                 align="center"
                 justify="space-between"
                 padding={{ base: 3, md: 5}}
-                position="fixed"
                 w="100%"
                 h={100}
-                zIndex="1"
+                zIndex="1"  
+                position="fixed"          
             >
                 <Flex
                     align="center"
@@ -119,8 +99,9 @@ export const Header:FC = () => {
                 <Wrap>
                     <WrapItem>
                         <Avatar
-                            size="md"
+                            size="lg"
                             src={profile?.avatar}
+                            mr="5px"
                         />{" "}
                     </WrapItem>
                 </Wrap>

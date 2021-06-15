@@ -4,9 +4,7 @@ import Icon from "@chakra-ui/icon";
 import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
 import { Image } from "@chakra-ui/image";
 import { Input, InputGroup } from "@chakra-ui/input";
-import { Box, Grid, GridItem, Spacer, Stack, Text, Wrap, WrapItem } from "@chakra-ui/layout";
-import { profile } from "console";
-import { Checkbox, CheckboxWithLabel } from "formik-material-ui";
+import { Box, Divider, Flex, Stack, Text } from "@chakra-ui/layout";
 import React, { FC, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../../app/store";
@@ -14,7 +12,6 @@ import { AppDispatch } from "../../../app/store";
 import { selectProfiles } from "../../../features/auth/authSlice";
 
 import {
-    selectComments,
     fetchPostStart,
     fetchPostEnd,
     fetchAsyncPostComment,
@@ -23,22 +20,15 @@ import {
 } from "../../../features/post/postSlice";
 
 import { POST, LIKED, DELETEPOST } from "../../../types/types";
+import { CommentModal } from "./CommentModal";
 
 
 export const Post: FC<POST> = (props) => {
     const { id, loginId, user_post, body, image, liked } = props;
     const dispatch: AppDispatch = useDispatch();
     const profiles = useSelector(selectProfiles);
-    const comments = useSelector(selectComments);
     const [text, setText ] = useState("");
     const NullText = () => setText("");
-    const [trash, setTrash] = useState(false);
-    const switchTrash = () => setTrash(!trash);
-    
-
-    const commentsOnPost = comments.filter((com) => {
-        return com.post === id;
-    });
 
     const prof = profiles.filter((prof) => {
         return prof.user_profile === user_post;
@@ -77,78 +67,79 @@ export const Post: FC<POST> = (props) => {
 
     if (body) {
         return (
-            <Stack spacing={1} py={4} px={4} >
+            <Stack spacing={1} py={4} px={4} zIndex="-1" >
                 <Box>
 
-                    <Grid templateColumns="repeat(3, 1fr)" >
-                        <Avatar src={prof[0]?.avatar} />
-                        <Text fontSize="lg" fontWeight="bold" mt={1} >{prof[0]?.user_name}</Text>  
-                        {user_post === loginId ? (
-                            <Icon as={DeleteIcon} onClick={handleDelete} mt={2} />):(null)}
-                    </Grid>
+                    <Flex >
+                        <Avatar bg="teal.400" src={prof[0]?.avatar} size="lg" />
+                        <Text  
+                            align="center" 
+                            fontSize="3xl" 
+                            fontWeight="bold" 
+                            mt={1} 
+                            mx={5}
+                        >{prof[0]?.user_name}
+                        </Text> 
+                    </Flex>
                 
                     <Box align="center" >  
                         <Image 
-                            objectFit="cover" 
-                            alt="" src={image} 
-                            boxSize="550px" 
+                            objectFit="cover"
+                            alt="" 
+                            src={image} 
+                            h="400px"
+                            w="600px"
                             mt={3} 
                         />
                     </Box>
-                    <Box pt={4} isTruncated >{body}</Box>
-
-                    {!liked.some((like) => like === loginId)  ? (
-                        <Button
-                            leftIcon={<StarIcon/>}
-                            bg="gray.200"
-                            onClick={handleLiked}
-                            _hover={{ opacity: 1 }}
-                    >いいね</Button>
-                    ): (
-                        <Button
-                            leftIcon={<StarIcon/>}
-                            bg="red.200"
-                            onClick={handleLiked}
-                            _hover={{ opacity: 1 }}
-                        >いいね済み</Button>
-                     )}
-                    <AvatarGroup size="md" max={7} >
-                        {liked.map((like) => (
-                            <Avatar 
-                                key={like} 
-                                name="" 
-                                src={profiles.find((prof) => 
-                                    prof.user_profile === like)?.avatar} />
-                                ))}
-                    </AvatarGroup>
-
-                    {commentsOnPost.map((comment) => (
-                        <Grid 
-                            key={comment.id} 
-                            templateColumns="repeat(7, 1fr)" 
-                            templateRows="repeat(2, 1fr)" 
-                        >
-                            <GridItem colSpan={3} rowSpan={2} >
-                                <Avatar
-                                src={
-                                    profiles.find(
-                                        (prof) => prof.user_profile === comment.user_comment
-                                    )?.avatar
-                                }
-                                />
-                            </GridItem>
-                            <GridItem colSpan={4} rowSpan={1} >
-                                <Text>{
-                                    profiles.find((prof) => prof.user_profile === comment.user_comment)?.user_name
-                                }</Text>
-                            </GridItem>
-                            <GridItem colSpan={4} rowSpan={1} >
-                                <Text>{comment.body}</Text>
-                            </GridItem>
-                        </Grid>
                     
-                    ))}
-                    <InputGroup>
+                    <Box pt={4} >
+                        <Text mx={5} >{body}</Text>
+                    </Box>
+                    <Divider mt={1} />
+                    
+                    <Flex pt={2} mx={5}>
+                        <Box pt={1}>
+                            <CommentModal id={id} />
+                        </Box>
+                        {!liked.some((like) => like === loginId)  ? (
+                            <Button
+                                leftIcon={<StarIcon/>}
+                                bg="gray.200"
+                                onClick={handleLiked}
+                                _hover={{ opacity: 1 }}
+                        >いいね</Button>
+                        ): (
+                            <Button
+                                leftIcon={<StarIcon/>}
+                                bg="red.200"
+                                mt={1}
+                                onClick={handleLiked}
+                                _hover={{ opacity: 1 }}
+                            >いいね済み</Button>
+                         )}
+                        <AvatarGroup ml={5} size="md" max={3} >
+                            {liked.map((like) => (
+                                <Avatar 
+                                    key={like} 
+                                    name="" 
+                                    src={profiles.find((prof) => 
+                                        prof.user_profile === like)?.avatar} />
+                                    ))}
+                        </AvatarGroup>
+                        {user_post === loginId ? (
+                            <Icon 
+                                w={6} 
+                                h={6} 
+                                as={DeleteIcon} 
+                                onClick={handleDelete} 
+                                mt="15px" 
+                                ml={6}
+                                _hover={{ opacity: 0.6}}
+                                />):(null)}
+                    </Flex>
+
+                    <InputGroup mt={2}>
                         <Input 
                             pr="4.5rm"
                             type="text"

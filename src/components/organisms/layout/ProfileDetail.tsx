@@ -2,14 +2,12 @@ import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHea
 import { Avatar } from "@chakra-ui/avatar";
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
-import React, { FC, memo, ReactNode, useState} from 'react'
-import {POST_PROFILE, File} from "../../../types/types";
+import React, { FC, ReactNode, useState} from 'react'
+import {File} from "../../../types/types";
 
 import {
     editUserName,
     selectMyProfile,
-    selectOpenProfile,
-    resetOpenProfile,
     fetchCreadStart,
     fetchCreadEnd,
     fetchAsyncUpdateProf,
@@ -19,7 +17,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Text } from '@chakra-ui/layout';
 import { Input } from '@chakra-ui/input';
 import { Textarea } from '@chakra-ui/textarea';
-import { getParsedCommandLineOfConfigFile } from 'typescript';
 
 type Props = {
     children: ReactNode,
@@ -31,7 +28,6 @@ export const ProfileDetail: FC<Props> = (props) => {
 
     const dispatch: AppDispatch = useDispatch();
     const profile = useSelector(selectMyProfile)
-    const openProfile = useSelector(selectOpenProfile);
 
     const [image, setImage] = useState<File | null>(null);
 
@@ -55,7 +51,7 @@ export const ProfileDetail: FC<Props> = (props) => {
                 {children}
             </Button>
 
-            <Modal isOpen={isOpen} onClose={onClose} >
+            <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} >
             <ModalOverlay />
                 
                     {!edit ? (
@@ -77,7 +73,6 @@ export const ProfileDetail: FC<Props> = (props) => {
                     ) :(
                     <ModalContent>
                     <ModalHeader>プロフィール</ModalHeader>
-                    <ModalCloseButton />
                     <ModalBody>
                         
                         <Text>アバター</Text>

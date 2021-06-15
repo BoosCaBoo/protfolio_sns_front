@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { AppDispatch } from "../app/store";
+import Modal from "react-modal";
+import { AppDispatch } from "../../../app/store";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
-import Modal from "react-modal";
 import * as Yup from "yup";
 import { Flex, Box, Heading, Divider, Stack, Input, InputGroup, InputRightElement, Button, Icon} from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import {
-    selectIsLoadingAuth,
     selectOpenSignIn,
     selectOpenSignUp,
-    selectMyProfile,
     setOpenSignIn,
     resetOpenSignIn,
     setOpenSignUp,
@@ -23,14 +21,18 @@ import {
     fetchAsyncGetMyProf,
     fetchAsyncGetProfs,
     fetchAsyncCreateProf,
-} from "../features/auth/authSlice";
-import { fetchAsyncGetComments, fetchAsyncGetPosts } from "../features/post/postSlice";
-// import { PrimaryButton } from "./atoms/button/PrimaryButton";
+} from "../../../features/auth/authSlice";
+import { fetchAsyncGetComments, fetchAsyncGetPosts } from "../../../features/post/postSlice";
 
-const CustomStyle = {
-    content: {
-    padding: 0,
-    mergin: 0,
+const customStyles = {
+    overlay: {
+        zIndex: "100",
+        width: "100%",
+        height:"100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
     }
 }
 
@@ -40,8 +42,6 @@ export const Auth: React.FC = () => {
     Modal.setAppElement("#root");
     const openSignIn = useSelector(selectOpenSignIn);
     const openSignUp = useSelector(selectOpenSignUp);
-    const isLoadingAuth = useSelector(selectIsLoadingAuth);
-    const profile = useSelector(selectMyProfile);
     const dispatch: AppDispatch = useDispatch()
 
     const [show, setShow] = useState(false);
@@ -54,6 +54,7 @@ export const Auth: React.FC = () => {
             onRequestClose={async () => {
                 await dispatch(resetOpenSignUp());
             }}
+            {...{customStyles}}
             >
                 <Formik
                     initialErrors={{ email: "required"}}
@@ -68,7 +69,7 @@ export const Auth: React.FC = () => {
                             
                             await dispatch(fetchAsyncGetProfs());
                             await dispatch(fetchAsyncGetPosts());
-                            await dispatch(fetchAsyncGetComments())
+                            await dispatch(fetchAsyncGetComments());
                             await dispatch(fetchAsyncGetMyProf());
                         }
 
@@ -90,7 +91,7 @@ export const Auth: React.FC = () => {
                     touched,
                     isValid,
                }) => (
-                    <div>
+                    <div {...{customStyles}}>
                         <form onSubmit={handleSubmit}  >
                             <Flex align="center" justify="center" h="100%" >
                                 <Box bg="white" w="md" p={4} borderRadius="md" shadow="md">
@@ -191,11 +192,12 @@ export const Auth: React.FC = () => {
  
 
             <Modal
+            
             isOpen={openSignIn}
             onRequestClose={async () => {
                 await dispatch(setOpenSignIn());
             }}
-            style={CustomStyle}
+            {...{customStyles}}
             >
                 <Formik
                     initialErrors={{ email: "required"}}
@@ -206,6 +208,9 @@ export const Auth: React.FC = () => {
                         
                         if (fetchAsyncLogin.fulfilled.match(result)) {
 
+
+                            await dispatch(fetchAsyncGetPosts());
+                            await dispatch(fetchAsyncGetComments());
                             await dispatch(fetchAsyncGetProfs());
                             await dispatch(fetchAsyncGetMyProf());
                         }
