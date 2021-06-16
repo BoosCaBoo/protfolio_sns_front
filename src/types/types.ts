@@ -23,7 +23,7 @@ export interface POST_PROFILE {
     id: number;
     user_name: string;
     avatar?: File | null;
-    bio: string;
+    bio: string | null;
 }
 
 export interface NEWPOST {
@@ -55,4 +55,5 @@ export interface POST {
     body: string;
     image: string;
     liked: number[];
+    created: string;
 }

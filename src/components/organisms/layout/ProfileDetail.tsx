@@ -7,6 +7,7 @@ import {File} from "../../../types/types";
 
 import {
     editUserName,
+    editUserBio,
     selectMyProfile,
     fetchCreadStart,
     fetchCreadEnd,
@@ -14,9 +15,8 @@ import {
 } from "../../../features/auth/authSlice"
 import { AppDispatch } from '../../../app/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Text } from '@chakra-ui/layout';
+import { Divider, Flex, Text } from '@chakra-ui/layout';
 import { Input } from '@chakra-ui/input';
-import { Textarea } from '@chakra-ui/textarea';
 
 type Props = {
     children: ReactNode,
@@ -47,7 +47,7 @@ export const ProfileDetail: FC<Props> = (props) => {
 
     return (    
         <>
-            <Button onClick={onOpen} colorScheme="teal">
+            <Button onClick={onOpen} colorScheme="teal" >
                 {children}
             </Button>
 
@@ -59,11 +59,21 @@ export const ProfileDetail: FC<Props> = (props) => {
                     <ModalHeader>プロフィール</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Box>
-                        <Avatar src={profile.avatar} />
-                        <Text>{profile.user_name}</Text>
-                        <Text>{profile.bio}</Text>
-                        </Box>
+                        <Flex>
+                        <Avatar src={profile.avatar} bg="teal.400" size="lg" />
+                        <Text
+                            align="center" 
+                            fontSize="3xl" 
+                            fontWeight="bold" 
+                            mt={1} 
+                            mx={5}
+                        >{profile.user_name}</Text>
+                        </Flex>
+                        <Text
+                            align="center"
+                            fontWeight="bold"
+                        >{profile.bio}</Text>
+                        <Divider my={2} />   
                     </ModalBody>
                     <ModalFooter>
                         <Button onClick={onClose} mr={3} >閉じる</Button>
@@ -75,25 +85,38 @@ export const ProfileDetail: FC<Props> = (props) => {
                     <ModalHeader>プロフィール</ModalHeader>
                     <ModalBody>
                         
-                        <Text>アバター</Text>
+                        <Text
+                            align="center"
+                            fontWeight="bold" 
+                            mt={1}
+                        >アバター</Text>
                         <Input 
+                            pt={1}
                             type="file"
                             id="imageInput"
                             onChange={(e) => setImage(e.target.files![0])}
                         />
-                        <Text>なまえ</Text>
-                        <Textarea
-                            placeholder="名前"
+                        <Text
+                            align="center" 
+                            fontWeight="bold" 
+                            mt={1}
+                        >ユーザーネーム</Text>
+                        <Input
+                            placeholder="ユーザーネーム"
                             type="text"
-                            value={profile?.user_name}
-                            onChange={(e) => dispatch(editUserName(e.target.value))}
+                            value={profile.user_name}
+                            onChange={(e) => dispatch(editUserName(e?.target.value))}
                         />
-                        <Text>ひとこと</Text>
-                        <Textarea
+                        <Text
+                            align="center" 
+                            fontWeight="bold" 
+                            mt={1}
+                        >ひとこと</Text>
+                        <Input
                             placeholder="ひとこと"
                             type="text"
-                            value={profile?.bio}
-                            onChange={(e) => dispatch(editUserName(e.target.value))}
+                            value={profile.bio}
+                            onChange={(e) => dispatch(editUserBio(e?.target.value))}
                         />
 
                     </ModalBody>

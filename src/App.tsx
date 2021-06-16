@@ -2,7 +2,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 import React from 'react';
 
 import styles from "./App.module.css"
-import { Core } from './features/core/Core';
+import { Core } from './components/core/Core';
+
 
 import theme from './theme/theme';
 

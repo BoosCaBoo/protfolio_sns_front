@@ -22,6 +22,7 @@ export const fetchAsyncGetPosts = createAsyncThunk(
 export const fetchAsyncDeletePost = createAsyncThunk(
     "post/delete",
     async (deletePost: DELETEPOST ) => {
+        // eslint-disable-next-line
         const res = await axios.delete(`${URL}/post/Post/${deletePost.id}`, {
             headers: {
                 Authorization: `JWT ${localStorage.localJWT}`,
@@ -112,7 +113,6 @@ export const postSlice = createSlice({
     name: "post",
     initialState: {
         isLoadingPost: false,
-        openNewPost: false,
         posts: [
             {
                 id: 0,
@@ -129,7 +129,7 @@ export const postSlice = createSlice({
                 user_comment: 0,
                 post: 0,
                 body: "",
-                created: ""
+                created: "",
             },
         ],
     },
@@ -141,12 +141,6 @@ export const postSlice = createSlice({
         fetchPostEnd(state) {
             state.isLoadingPost = false;
         },
-        setOpenNewPost(state) {
-            state.openNewPost = true;
-        },
-        resetOpenNewPost(state) {
-            state.openNewPost = false
-        }
     },
 
     extraReducers: (builder) => {
@@ -188,12 +182,9 @@ export const postSlice = createSlice({
 export const {
     fetchPostStart,
     fetchPostEnd,
-    setOpenNewPost,
-    resetOpenNewPost,
 } =  postSlice.actions;
 
 export const selectIsLoadingPost = (state: RootState) => state.post.isLoadingPost;
-export const selectOpenNewPost = (state: RootState) => state.post.openNewPost;
 export const selectPosts = (state: RootState) => state.post.posts;
 export const selectComments= (state: RootState) => state.post.comments;
 

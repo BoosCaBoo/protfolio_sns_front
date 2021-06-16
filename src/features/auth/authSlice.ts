@@ -88,9 +88,6 @@ export const fetchAsyncGetProfs = createAsyncThunk(
 export const authSlice = createSlice({
     name: "auth",
     initialState: {
-        openSignIn: true,
-        openSignUp: false,
-        openProfile: false,
         isLoadingAuth: false,
         myProfile: {
             id: 0,
@@ -118,33 +115,18 @@ export const authSlice = createSlice({
         fetchCreadEnd(state) {
             state.isLoadingAuth = false;
         },
-        setOpenSignIn(state) {
-            state.openSignIn = true;
-        },
-        resetOpenSignIn(state) {
-            state.openSignIn = false;
-        },
-        setOpenSignUp(state) {
-            state.openSignUp = true;
-        },
-        resetOpenSignUp(state) {
-            state.openSignUp = false;
-        },
-        setOpenProfile(state) {
-            state.openProfile = true;
-        },
-        resetOpenProfile(state) {
-            state.openProfile = false;
-        },
         editUserName(state, action) {
-            state.myProfile.user_name = action.payload
-        }
+            state.myProfile.user_name = action.payload;
+        },
+        editUserBio(state, action) {
+            state.myProfile.bio = action.payload;
+        },
     },
 
     extraReducers: (builder) => {
         builder.addCase(fetchAsyncLogin.fulfilled, (state, action: PayloadAction<JWT>) => {
             localStorage.setItem("localJWT", action.payload.access);
-            // action.payload.access && (window.location.href = "/home")
+            action.payload.access && (window.location.href = "/home")
         });
         builder.addCase(fetchAsyncCreateProf.fulfilled, (state, action) => {
             state.myProfile = action.payload;
@@ -168,19 +150,11 @@ export const authSlice = createSlice({
 export const { 
     fetchCreadStart, 
     fetchCreadEnd,
-    setOpenSignIn,
-    resetOpenSignIn,
-    setOpenSignUp,
-    resetOpenSignUp,
-    setOpenProfile,
-    resetOpenProfile,
     editUserName,
+    editUserBio,
 } =  authSlice.actions;
 
 export const selectIsLoadingAuth = (state: RootState) => state.auth.isLoadingAuth;
-export const selectOpenSignIn = (state: RootState) => state.auth.openSignIn;
-export const selectOpenSignUp = (state: RootState) => state.auth.openSignUp;
-export const selectOpenProfile = (state: RootState) => state.auth.openProfile;
 export const selectMyProfile = (state: RootState) => state.auth.myProfile;
 export const selectProfiles = (state: RootState) => state.auth.profiles;
 

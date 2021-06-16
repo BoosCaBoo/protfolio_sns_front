@@ -1,19 +1,13 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { AppDispatch } from "../../../app/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Flex, Box, Heading, Divider, Stack, Input, InputGroup, InputRightElement, Button, Icon} from "@chakra-ui/react";
+import { Flex, Box, Heading, Divider, Stack, Input, InputGroup, InputRightElement, Button, Icon, ChakraProvider, theme, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Wrap} from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import {
-    selectOpenSignIn,
-    selectOpenSignUp,
-    setOpenSignIn,
-    resetOpenSignIn,
-    setOpenSignUp,
-    resetOpenSignUp,
     fetchCreadStart,
     fetchCreadEnd,
     fetchAsyncLogin,
@@ -24,38 +18,25 @@ import {
 } from "../../../features/auth/authSlice";
 import { fetchAsyncGetComments, fetchAsyncGetPosts } from "../../../features/post/postSlice";
 
-const customStyles = {
-    overlay: {
-        zIndex: "100",
-        width: "100%",
-        height:"100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "absolute",
-    }
-}
-
 
 export const Auth: React.FC = () => {
     /* ここはSignIn、Up関係 */
     Modal.setAppElement("#root");
-    const openSignIn = useSelector(selectOpenSignIn);
-    const openSignUp = useSelector(selectOpenSignUp);
     const dispatch: AppDispatch = useDispatch()
 
+    const [ login, setLogin ] = useState(true);
+    const handleLogin = () => setLogin(!login);
+
     const [show, setShow] = useState(false);
-    const handleClick = () => setShow(!show);
+    const handleShow = () => setShow(!show);
+
+    const [alert, setAlert] = useState(false);
+    const handleAlert = () => setAlert(!alert); 
 
     return (
+        <ChakraProvider theme={theme}>
         <>
-            <Modal
-            isOpen={openSignUp}
-            onRequestClose={async () => {
-                await dispatch(resetOpenSignUp());
-            }}
-            {...{customStyles}}
-            >
+        { !login ? (
                 <Formik
                     initialErrors={{ email: "required"}}
                     initialValues={{ email: "", password: "", name: "",}}
@@ -71,10 +52,11 @@ export const Auth: React.FC = () => {
                             await dispatch(fetchAsyncGetPosts());
                             await dispatch(fetchAsyncGetComments());
                             await dispatch(fetchAsyncGetMyProf());
+                        } else {
+                            handleAlert();
                         }
 
                         await dispatch(fetchCreadEnd());
-                        await dispatch(resetOpenSignUp());
                     }}
                     validationSchema={Yup.object().shape({
                         email: Yup.string().email("email format is wrong").required("email is must"),
@@ -91,9 +73,9 @@ export const Auth: React.FC = () => {
                     touched,
                     isValid,
                }) => (
-                    <div {...{customStyles}}>
+                   <>
                         <form onSubmit={handleSubmit}  >
-                            <Flex align="center" justify="center" h="100%" >
+                            <Flex align="center" justify="center" h="100%" pt="75px" >
                                 <Box bg="white" w="md" p={4} borderRadius="md" shadow="md">
                                     <Heading as="h1" size="lg" textAlign="center">
                                         SNS CLONE
@@ -129,7 +111,7 @@ export const Auth: React.FC = () => {
                                                 bg="white"
                                                 h="2.0rem"
                                                 size="sm"
-                                                onClick={handleClick}
+                                                onClick={handleShow}
                                                 >
                                                     {show ? <Icon as={ViewIcon} /> : <Icon as={ViewOffIcon} /> }
                                                 </Button>
@@ -171,8 +153,7 @@ export const Auth: React.FC = () => {
                                         <Button
                                             color="teal"
                                             onClick={async () => {
-                                                await dispatch(setOpenSignIn());
-                                                await dispatch(resetOpenSignUp());
+                                                handleLogin();
                                             }}
                                         >
                                             ログインする
@@ -182,23 +163,19 @@ export const Auth: React.FC = () => {
                                 </Box>
                             </Flex>
                         </form>
-                    </div>
+                        { alert && 
+                        <Alert status="error">
+                            <AlertIcon />
+                            <AlertTitle mr={2}>登録に失敗しました！</AlertTitle>
+                            <AlertDescription mr={2}>別のメールアドレスで登録してください。</AlertDescription>
+                            <CloseButton position="absolute" right="8px" top="8px" onClick={handleAlert} />
+                        </Alert>
+                        }     
+                    </>
                     )}
                 </Formik>
-            </Modal>
+         ) : (
         
-
-
- 
-
-            <Modal
-            
-            isOpen={openSignIn}
-            onRequestClose={async () => {
-                await dispatch(setOpenSignIn());
-            }}
-            {...{customStyles}}
-            >
                 <Formik
                     initialErrors={{ email: "required"}}
                     initialValues={{ email: "", password: ""}}
@@ -213,9 +190,10 @@ export const Auth: React.FC = () => {
                             await dispatch(fetchAsyncGetComments());
                             await dispatch(fetchAsyncGetProfs());
                             await dispatch(fetchAsyncGetMyProf());
+                        } else {
+                            handleAlert();
                         }
                         await dispatch(fetchCreadEnd());
-                        await dispatch(resetOpenSignIn());
                     }}
                     validationSchema={Yup.object().shape({
                         email: Yup.string().email("email format is wrong").required("email is must"),
@@ -231,9 +209,10 @@ export const Auth: React.FC = () => {
                       touched,
                       isValid,
                     }) => (
-                        <div>
+                        <>
+                        <Box>
                             <form onSubmit={handleSubmit} >
-                                <Flex align="center" justify="center" h="100%" mt="75" >
+                                <Flex align="center" justify="center" mt="75px" >
                                     <Box bg="white" w="md" p={4} borderRadius="md" shadow="md">
                                         <Heading as="h1" size="lg" textAlign="center">
                                             SNS CLONE
@@ -269,7 +248,7 @@ export const Auth: React.FC = () => {
                                                     bg="white"
                                                     h="2.0rem"
                                                     size="sm"
-                                                    onClick={handleClick}
+                                                    onClick={handleShow}
                                                     >
                                                         {show ? <Icon as={ViewIcon} /> : <Icon as={ViewOffIcon} /> }
                                                     </Button>
@@ -298,8 +277,7 @@ export const Auth: React.FC = () => {
                                             <Button
                                                 color="teal"
                                                 onClick={async () => {
-                                                    await dispatch(resetOpenSignIn());
-                                                    await dispatch(setOpenSignUp());
+                                                    handleLogin();
                                                 }}
                                             >
                                                 登録する
@@ -309,14 +287,24 @@ export const Auth: React.FC = () => {
                                     </Box>
                                 </Flex>
                             </form>
-                        </div>
+                            { alert && 
+                                <Wrap  mt="55px" >
+                                <Alert status="error"  >
+                                    <AlertIcon />
+                                    <AlertTitle mr={2}>ログインに失敗しました！</AlertTitle>
+                                    <AlertDescription mr={2}>メールアドレス、またはパスワードが間違っています。</AlertDescription>
+                                    <CloseButton position="absolute" right="8px" top="8px" onClick={handleAlert} />
+                                </Alert>
+                                </Wrap>
+                            }  
+                        </Box>   
+                        </>
                     )}
                 </Formik>
-
-            </Modal>
-
-
+         )}
+        
         </>
+        </ChakraProvider>
     )
 };
 

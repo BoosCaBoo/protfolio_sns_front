@@ -4,7 +4,8 @@ import Icon from "@chakra-ui/icon";
 import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
 import { Image } from "@chakra-ui/image";
 import { Input, InputGroup } from "@chakra-ui/input";
-import { Box, Divider, Flex, Stack, Text } from "@chakra-ui/layout";
+import { Box, Divider, Flex, Spacer, Stack, Text } from "@chakra-ui/layout";
+import { Tooltip } from "@chakra-ui/tooltip";
 import React, { FC, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../../app/store";
@@ -24,7 +25,7 @@ import { CommentModal } from "./CommentModal";
 
 
 export const Post: FC<POST> = (props) => {
-    const { id, loginId, user_post, body, image, liked } = props;
+    const { id, loginId, user_post, body, image, liked, created } = props;
     const dispatch: AppDispatch = useDispatch();
     const profiles = useSelector(selectProfiles);
     const [text, setText ] = useState("");
@@ -67,7 +68,7 @@ export const Post: FC<POST> = (props) => {
 
     if (body) {
         return (
-            <Stack spacing={1} py={4} px={4} zIndex="-1" >
+            <Stack spacing={1} py={4} px={4} zIndex="0" >
                 <Box>
 
                     <Flex >
@@ -79,7 +80,16 @@ export const Post: FC<POST> = (props) => {
                             mt={1} 
                             mx={5}
                         >{prof[0]?.user_name}
-                        </Text> 
+                        </Text>
+                        <Spacer />
+                        <Text
+                            align="center" 
+                            fontSize="sm"
+                            fontWeight="thin" 
+                            opacity="0.8"
+                            mt={5}
+                            mr={3}
+                        >{created}</Text>
                     </Flex>
                 
                     <Box align="center" >  
@@ -98,7 +108,7 @@ export const Post: FC<POST> = (props) => {
                     </Box>
                     <Divider mt={1} />
                     
-                    <Flex pt={2} mx={5}>
+                    <Flex pt={2} mx={5} >
                         <Box pt={1}>
                             <CommentModal id={id} />
                         </Box>
@@ -106,19 +116,20 @@ export const Post: FC<POST> = (props) => {
                             <Button
                                 leftIcon={<StarIcon/>}
                                 bg="gray.200"
+                                mt={1}
                                 onClick={handleLiked}
                                 _hover={{ opacity: 1 }}
                         >いいね</Button>
                         ): (
                             <Button
                                 leftIcon={<StarIcon/>}
-                                bg="red.200"
+                                bg="#f7cd12"
                                 mt={1}
                                 onClick={handleLiked}
                                 _hover={{ opacity: 1 }}
-                            >いいね済み</Button>
+                            >いいね</Button>
                          )}
-                        <AvatarGroup ml={5} size="md" max={3} >
+                        <AvatarGroup ml={2} size="sm" max={3} >
                             {liked.map((like) => (
                                 <Avatar 
                                     key={like} 
@@ -127,19 +138,22 @@ export const Post: FC<POST> = (props) => {
                                         prof.user_profile === like)?.avatar} />
                                     ))}
                         </AvatarGroup>
+                        <Spacer />
                         {user_post === loginId ? (
-                            <Icon 
+                            <Tooltip label="投稿削除" placement="top" >
+                            <Icon
+                                pl={1}
                                 w={6} 
                                 h={6} 
                                 as={DeleteIcon} 
                                 onClick={handleDelete} 
-                                mt="15px" 
-                                ml={6}
+                                mt="8px"
                                 _hover={{ opacity: 0.6}}
-                                />):(null)}
+                                /></Tooltip>
+                            ):(null)}
                     </Flex>
 
-                    <InputGroup mt={2}>
+                    <InputGroup mt={3}>
                         <Input 
                             pr="4.5rm"
                             type="text"

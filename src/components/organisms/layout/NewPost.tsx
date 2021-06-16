@@ -84,6 +84,7 @@ export const NewPost: FC = () => {
                             type="file"
                             id="imageInput"
                             onChange={(e) => setImage(e.target.files![0])}
+                            pt={1}
                         />
                     </Box>
                 </Stack>

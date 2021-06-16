@@ -1,48 +1,42 @@
-import { Box, Grid} from "@chakra-ui/layout";
-import { Progress } from "@chakra-ui/progress";
+import { Box, SimpleGrid} from "@chakra-ui/layout";
 
 import React, { FC, useEffect } from "react";
 import  { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../app/store"
 
-import { Auth } from "../../components/organisms/layout/Auth";
-import { Header } from "../../components/organisms/layout/Header";
+import { Header } from "../organisms/layout/Header";
 import {
     selectMyProfile,
-    selectIsLoadingAuth,
-    setOpenSignIn,
-    resetOpenSignIn,
     fetchAsyncGetMyProf,
     fetchAsyncGetProfs,
-} from "../auth/authSlice"
+} from "../../features/auth/authSlice"
 import {
     selectPosts,
-    selectIsLoadingPost,
     fetchAsyncGetPosts,
     fetchAsyncGetComments,
-} from "../post/postSlice";
-import { Post } from "../../components/organisms/layout/Post";
+} from "../../features/post/postSlice";
+import { Post } from "../organisms/layout/Post";
+
 
 export const Core: FC = () => {
 
     const dispatch: AppDispatch = useDispatch();
     const profile = useSelector(selectMyProfile);
     const posts = useSelector(selectPosts);
-    const isLoadingAuth = useSelector(selectIsLoadingAuth);
-    const isLoadingPost = useSelector(selectIsLoadingPost);
+    
 
     useEffect(() => {
         const fetchBootLoader = async () => {
           if (localStorage.localJWT) {
-            dispatch(resetOpenSignIn());
             const result = await dispatch(fetchAsyncGetMyProf());
             if (fetchAsyncGetMyProf.rejected.match(result)) {
-              dispatch(setOpenSignIn());
               return null;
             }
             await dispatch(fetchAsyncGetPosts());
             await dispatch(fetchAsyncGetProfs());
             await dispatch(fetchAsyncGetComments());
+          } else {
+            window.location.href = "/";
           }
         };
         fetchBootLoader();
@@ -51,13 +45,11 @@ export const Core: FC = () => {
     return (
         <>
             <Header />
-            <Auth />
-            {(isLoadingPost || isLoadingAuth) && <Progress size="xs" isIndeterminate color="teal" /> }
-            { profile.user_name && (
+            { profile.id && (
                 <>
-                <Grid templateColumns="repeat(2, 1fr)" pt="100px" >
-                    {posts.slice(0).reverse().map((post) => (
-                        <Box 
+                <SimpleGrid columns={{ base: 1, lg: 2 }} pt="70px" >
+                    {posts.slice(0).map((post) => (
+                        <Box
                             key={post.id} 
                             maxW="100%" 
                             bg="gray.100" 
@@ -67,7 +59,7 @@ export const Core: FC = () => {
                             overflow="hidden"
                             mx={5}
                             mt={5}
-                            >
+                        >
                             <Post
                                 id={post.id}
                                 loginId={profile.user_profile}
@@ -75,11 +67,12 @@ export const Core: FC = () => {
                                 body={post.body}
                                 image={post.image}
                                 liked={post.liked}
+                                created={post.created}
                             />
 
                         </Box>
                     ))}
-                </Grid>
+                </SimpleGrid>
                 </>
             )}
         </>

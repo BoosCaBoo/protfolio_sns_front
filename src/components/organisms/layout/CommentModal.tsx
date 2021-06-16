@@ -30,28 +30,28 @@ export const CommentModal: FC<Props> = (props) => {
                     <ModalHeader>コメント一覧</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        {commentsOnPost.map((comment) => (
-                            <>
-                            <Box borderWidth="1px" borderRadius="lg" m="5px" >
+                        {commentsOnPost.map((comment: any) => (
+                            
+                            <Box key={comment.id} borderWidth="1px" borderRadius="lg" m="5px" >
                             <Flex
-                                key={comment.id}
                                 mt={2}
                             >                            
                                 <Avatar
                                     size="md"
-                                    ml="10px"
+                                    ml="20px"
                                     src={
                                     profiles.find(
                                     (prof) => prof.user_profile === comment.user_comment)?.avatar
                                     }
                                 />
-                                <Text ml={5} fontSize="xl" fontWeight="bold"  >{
+                                <Text ml="30px" fontSize="xl" fontWeight="bold"  >{
                                     profiles.find((prof) => prof.user_profile === comment.user_comment)?.user_name
                                 }</Text>
+                                <Text fontSize="sm" mt="3px" ml="50px" fontWeight="thin" opacity="0.8" >{comment.created}</Text>
                             </Flex>
                             <Text pl="100px" pb="10px" fontSize="lg" >{comment.body}</Text>
                             </Box>
-                            </>
+                            
                         ))}
                     </ModalBody>
                     <ModalFooter>
