@@ -18,6 +18,8 @@ import {
     fetchAsyncPostComment,
     fetchAsyncPatchLiked,
     fetchAsyncDeletePost,
+    fetchAsyncGetPosts,
+    fetchAsyncGetComments,
 } from "../../../features/post/postSlice";
 
 import { POST, LIKED, DELETEPOST } from "../../../types/types";
@@ -63,6 +65,8 @@ export const Post: FC<POST> = (props) => {
         };
         await dispatch(fetchPostStart());
         await dispatch(fetchAsyncDeletePost(packet));
+        await dispatch(fetchAsyncGetPosts());
+        await dispatch(fetchAsyncGetComments());
         await dispatch(fetchPostEnd());
     }
 
